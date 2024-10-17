@@ -32,19 +32,18 @@ for index, row in file2_data.iterrows():
     if not potential_ibans.empty:
         # Divide the last two digits by the country code
         division_result = last_two_digits / country_code
-        try:
-            if division_result == 1.0:
-                decimal_part_str = '00'
-            else:
-                # Get the second and third decimal places
-                decimal_part = int(str(division_result).split('.')[1][1:3])
-                decimal_part_str=str(decimal_part)
-        except:
-            print()
+
+        # Handle the special case where the division result is 1.0
+        if division_result == 1.0:
+            decimal_part = '00'
+        else:
+            # Get the second and third decimal places for normal cases
+            decimal_part = str(division_result).split('.')[1][:2]
+
         # Find the matching IBAN based on the first two digits
         for _, potential_iban_row in potential_ibans.iterrows():
             iban = potential_iban_row['IBAN']
-            if iban[2:4] == decimal_part_str:
+            if iban[2:4] == decimal_part:
                 # Add the result to the filtered list
                 filtered_ibans.append({
                     'User': potential_iban_row['User'],
