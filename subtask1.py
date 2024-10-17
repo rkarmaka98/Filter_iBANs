@@ -20,7 +20,7 @@ file2_data = pd.read_excel(file2_path, engine='openpyxl')
 country_code_data = pd.read_excel(country_code_file, engine='openpyxl')
 
 # Create a dictionary for quick lookup of country names by country code
-country_code_dict = {str(row['country_code']): row['name'] for _, row in country_code_data.iterrows()}
+country_code_dict = {str(row['alpha-2']): row['name'] for _, row in country_code_data.iterrows()}
 
 
 # Process each row from Foobar2.xlsx and find matching IBANs
@@ -50,7 +50,7 @@ for index, row in file2_data.iterrows():
         for _, potential_iban_row in potential_ibans.iterrows():
             iban = potential_iban_row['IBAN']
             if iban[2:4] == decimal_part:
-                country_name = country_code_dict.get(str(country_code), "Unknown Country")
+                country_name = country_code_dict.get(str(iban[:2]), "Unknown Country")
                 # Add the result to the filtered list
                 filtered_ibans.append({
                     'User': potential_iban_row['User'],
