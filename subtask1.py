@@ -12,10 +12,16 @@ def extract_last_two_digits(phone_number):
 # Load the provided Excel files
 file1_path = 'Foobar1.xlsx'
 file2_path = 'Foobar2.xlsx'
+country_code_file='ISO3166.xlsx'
 
 # Load the files using openpyxl engine
 file1_data = pd.read_excel(file1_path, engine='openpyxl')
 file2_data = pd.read_excel(file2_path, engine='openpyxl')
+country_code_data = pd.read_excel(country_code_file, engine='openpyxl')
+
+# Create a dictionary for quick lookup of country names by country code
+country_code_dict = {str(row['country_code']): row['name'] for _, row in country_code_data.iterrows()}
+
 
 # Process each row from Foobar2.xlsx and find matching IBANs
 filtered_ibans = []
@@ -44,10 +50,11 @@ for index, row in file2_data.iterrows():
         for _, potential_iban_row in potential_ibans.iterrows():
             iban = potential_iban_row['IBAN']
             if iban[2:4] == decimal_part:
+                country_name = country_code_dict.get(str(country_code), "Unknown Country")
                 # Add the result to the filtered list
                 filtered_ibans.append({
                     'User': potential_iban_row['User'],
-                    'Country': phone_number.split()[0],
+                    'Country': country_name,
                     'PhoneNumber': phone_number,
                     'IBAN': iban
                 })
