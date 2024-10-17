@@ -33,7 +33,7 @@ for index, row in file2_data.iterrows():
 
     # Filter IBANs by the last four digits
     potential_ibans = file1_data[file1_data['IBAN'].str.endswith(last_4_digits)]
-
+    
     # Check if there are any potential matches
     if not potential_ibans.empty:
         # Divide the last two digits by the country code
@@ -44,7 +44,7 @@ for index, row in file2_data.iterrows():
             decimal_part = '00'
         else:
             # Get the second and third decimal places for normal cases
-            decimal_part = str(division_result).split('.')[1][:2]
+            decimal_part = str(division_result).split('.')[1][1:3]
 
         # Find the matching IBAN based on the first two digits
         for _, potential_iban_row in potential_ibans.iterrows():
